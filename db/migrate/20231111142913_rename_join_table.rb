@@ -1,10 +1,9 @@
 class RenameJoinTable < ActiveRecord::Migration[7.1]
   def change
-    create_join_table :queries, :heating do |t|
-      # t.index [:query_id, :heating_unit_id]
-      # t.index [:heating_unit_id, :query_id]
+    create_table :tendering_heatings, id: false do |t|
+      t.references :query, null: false, foreign_key: true
+      t.references :heating, null: false, foreign_key: true
+      t.primary_key [:query_id, :heating_id]
     end
-
-    rename_table :heating_queries, :tendering_heatings
   end
 end
