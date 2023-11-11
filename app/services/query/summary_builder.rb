@@ -77,8 +77,8 @@ class Query::SummaryBuilder
 
     query.planned_heatings.each do |heating|
       # check that the heating type is in the list of current heating solutions
-      total_cost += heating.cost
-      total_energy += heating.energy
+      total_cost += heating.cost.q || 0
+      total_energy += heating.energy.presence || 0
 
       if CURRENT_HEATING_SOLUTIONS.include?(heating.heating_unit.heating_type)
         # get index of current heating solution

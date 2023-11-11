@@ -58,6 +58,7 @@ module Junction
         requires :occupants, type: Integer, desc: 'Number of occupants'
         requires :budget, type: Float, desc: 'Budget'
         optional :name, type: String, desc: 'Name'
+        optional :houseSqm, type: Float, desc: 'House square meters' # TODO: add migration
         requires :content, type: String, desc: 'Content'
         group :address, type: Hash do
           optional :street, type: String, desc: 'Street name'
@@ -71,7 +72,7 @@ module Junction
           optional :state, type: String, desc: 'State (planned/installed)'
           optional :percentage, type: Float, desc: 'Percentage (%)'
         end
-        requires :due_date, type: DateTime
+        requires :due_date, type: String
       end
 
       post do
@@ -87,10 +88,11 @@ module Junction
         query = current_user.queries.new({
           budget: params[:budget],
           content: params[:content],
-          due_date: params[:due_date],
+          due_date: DateTime.parse(params[:due_date]),
           occupants: params[:occupants],
           name: params[:name],
-          address: address
+          address: address,
+          houseSqm: params[:houseSqm]
         })
 
         params["current_heatings"]&.each do |heating|
