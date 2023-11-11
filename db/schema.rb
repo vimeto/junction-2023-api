@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_11_094246) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_11_220724) do
   create_table "addresses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "street"
     t.string "city"
@@ -40,7 +40,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_094246) do
 
   create_table "heating_units", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
-    t.string "heating_type"
+    t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -56,6 +56,24 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_094246) do
     t.datetime "updated_at", null: false
     t.index ["heating_unit_id"], name: "index_heatings_on_heating_unit_id"
     t.index ["query_id"], name: "index_heatings_on_query_id"
+  end
+
+  create_table "offer_discussions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "query_id", null: false
+    t.bigint "company_contact_id", null: false
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_contact_id"], name: "index_offer_discussions_on_company_contact_id"
+    t.index ["query_id"], name: "index_offer_discussions_on_query_id"
+  end
+
+  create_table "offer_messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "offer_discussion_id", null: false
+    t.string "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["offer_discussion_id"], name: "index_offer_messages_on_offer_discussion_id"
   end
 
   create_table "queries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -74,6 +92,15 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_094246) do
     t.index ["user_id"], name: "index_queries_on_user_id"
   end
 
+  create_table "query_notifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "query_id", null: false
+    t.integer "status", default: 0
+    t.string "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["query_id"], name: "index_query_notifications_on_query_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "username"
     t.string "email"
@@ -87,6 +114,10 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_094246) do
   add_foreign_key "company_contacts", "companies"
   add_foreign_key "heatings", "heating_units"
   add_foreign_key "heatings", "queries"
+  add_foreign_key "offer_discussions", "company_contacts"
+  add_foreign_key "offer_discussions", "queries"
+  add_foreign_key "offer_messages", "offer_discussions"
   add_foreign_key "queries", "addresses"
   add_foreign_key "queries", "users"
+  add_foreign_key "query_notifications", "queries"
 end
