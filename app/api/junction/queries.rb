@@ -23,7 +23,7 @@ module Junction
         end
       end
 
-      desc 'Create a query'
+      desc 'Create a query. Returns a summary { total_savings:, total_cost:, total_energy: } in summary'
       params do
         requires :occupants, type: Integer, desc: 'Number of occupants'
         requires :budget, type: Float, desc: 'Budget'
@@ -82,6 +82,10 @@ module Junction
         end
 
         if query.save
+          summary_builder = Query::SummaryBuilder.call(query)
+          query.update({
+            summary: summary_builder.result
+          })
           query
         else
           error!(query.errors.full_messages.join(", "), 400)
