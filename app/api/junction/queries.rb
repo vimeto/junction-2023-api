@@ -27,6 +27,7 @@ module Junction
       params do
         requires :occupants, type: Integer, desc: 'Number of occupants'
         requires :budget, type: Float, desc: 'Budget'
+        optional :name, type: String, desc: 'Name'
         requires :content, type: String, desc: 'Content'
         group :address, type: Hash do
           optional :street, type: String, desc: 'Street name'
@@ -34,11 +35,11 @@ module Junction
           optional :zipcode, type: String, desc: 'Zip Code'
         end
         requires :current_heatings, type: Array do
-          requires :heating_type, type: String, desc: 'Heating type'
-          optional :energy, type: Float, desc: 'Energy'
-          optional :cost, type: Float, desc: 'Cost'
-          optional :state, type: String, desc: 'State'
-          optional :percentage, type: Float, desc: 'Percentage'
+          requires :heating_type, type: String, desc: 'Heating type (gas/oil/wood/pellets/heat pump/solar/other))'
+          optional :energy, type: Float, desc: 'Energy (kWh/v))'
+          optional :cost, type: Float, desc: 'Cost (€/v)'
+          optional :state, type: String, desc: 'State (planned/installed)'
+          optional :percentage, type: Float, desc: 'Percentage (%)'
         end
         requires :due_date, type: DateTime
       end
@@ -57,10 +58,12 @@ module Junction
           budget: params[:budget],
           content: params[:content],
           due_date: params[:due_date],
+          occupants: params[:occupants],
+          name: params[:name],
           address: address
         })
 
-        params.current_heatings&.each do |heating|
+        params["current_heatings"]&.each do |heating|
           state = heating[:state].presence || "planned"
           heating_unit = HeatingUnit.where({
             state: state,
