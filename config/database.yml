@@ -1,0 +1,29 @@
+default: &default
+  adapter: trilogy
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  encoding: utf8mb4
+
+development:
+  <<: *default
+  database: junction_development
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: ""
+
+test:
+  <<: *default
+  database: junction_test
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: ""
+
+production:
+  <<: *default
+  database: junction
+  host: "mysqldb-vilhelm-7f26.a.aivencloud.com"
+  port: 27354
+  username: avnadmin
+  password: ENV["DATABASE_PASSWORD"]

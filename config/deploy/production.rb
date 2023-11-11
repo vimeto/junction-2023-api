@@ -60,4 +60,11 @@
 #     # password: "please use keys"
 #   }
 
-server '65.108.240.77', user: 'root', roles: %w{app db web}
+# set :ssh_options, {
+#   keys: [
+#     "config/deploy_id_rsa"
+#   ],
+#   forward_agent: true
+# }
+
+server '65.108.240.77', user: 'deploy', roles: %w{app db web}

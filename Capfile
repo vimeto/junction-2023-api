@@ -15,9 +15,9 @@ require "capistrano/deploy"
 require "capistrano/scm/git"
 install_plugin Capistrano::SCM::Git
 
-set :application, "junction-api"
-set :repo_url, "git@github.com:vimeto/junction-2023-api.git"
-set :deploy_to, "/var/www/junction-api"
+require 'capistrano/rails'
+require 'capistrano/passenger'
+require 'capistrano/rbenv'
 
 # Include tasks from other gems included in your Gemfile
 #
@@ -40,3 +40,7 @@ set :deploy_to, "/var/www/junction-api"
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
 Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }
+
+
+set :rbenv_type, :user
+set :rbenv_ruby, '3.2.2'

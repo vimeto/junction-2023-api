@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "3.3.0.preview2"
+ruby "3.2.2"
 
 gem "rails", "~> 7.1.1"
 gem "puma", ">= 5.0"
@@ -23,11 +23,17 @@ gem "grape-swagger-rails"
 # gem "bcrypt", "~> 3.1.7"
 
 group :development do
-  gem 'capistrano', require: false
-  gem "capistrano-rails", require: false
+  gem 'capistrano'
+  gem "capistrano-rails"
+  gem "capistrano-passenger"
+  gem "capistrano-rbenv"
 end
 
 
 group :development do
 end
 
+
+gem "ed25519", "~> 1.3"
+
+gem "bcrypt_pbkdf", "~> 1.1"
