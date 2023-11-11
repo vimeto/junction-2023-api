@@ -23,6 +23,36 @@ module Junction
         end
       end
 
+      desc "Start contractor rendering"
+      params do
+        requires :id, type: Integer, desc: 'Query id'
+        requires :heating_unit_ids, type: Array, desc: 'Heating unit ids'
+      end
+
+      post ':id/start_contractor_rendering' do
+        query = current_user.queries.where(id: params[:id]).includes(planned_heatings: :heating_unit).first
+        error!('Not Found', 404) if !query
+
+        heating_unit_ids = query.planned_heatings.map(&:heating_unit_id) & params[:heating_unit_ids].map(&:to_i)
+        heatings = Heating.where(heating_unit_id: heating_unit_ids)
+
+        if heatings.empty?
+          error!("No heating units found", 400)
+        end
+
+        if query.save
+          # TODO: update this so that we remove the heatings from planned_heatings
+          query.tendering_heatings << heatings
+          query.save!
+
+          query
+        else
+          error!(query.errors.full_messages.join(", "), 400)
+        end
+      end
+
+
+
       desc 'Create a query. Returns a summary { total_savings:, total_cost:, total_energy: } in summary'
       params do
         requires :occupants, type: Integer, desc: 'Number of occupants'
@@ -78,7 +108,7 @@ module Junction
             cost: heating[:cost],
             percentage: heating[:percentage]
           })
-          query.heatings << heating
+          query.planned_heatings << heating
         end
 
         if query.save

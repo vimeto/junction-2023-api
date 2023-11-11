@@ -22,7 +22,7 @@ module Junction::Base
       end
 
       def get_current_user
-        User.find_by("username", "admin") || User.create(username: "admin")
+        User.find_by(username: "admin") || User.create(username: "admin")
       end
     end
   end

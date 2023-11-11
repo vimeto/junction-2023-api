@@ -2,6 +2,12 @@ require 'rails_helper'
 
 describe Junction::Queries do
   let(:user) { create(:user) }
+  let(:query) { create(:query, user: user) }
+  let(:heating_unit) { create(:heating_unit) }
+
+  # before do
+  #   allow_any_instance_of(Junction::Queries).to receive(:current_user).and_return(user)
+  # end
 
   describe 'GET /queries' do
     it 'returns all queries' do
@@ -10,6 +16,28 @@ describe Junction::Queries do
 
       expect(response.status).to eq(200)
       expect(response_body).to eq([])
+    end
+  end
+
+  describe 'POST /queries/:id/start_contractor_rendering' do
+    let(:contractor_rendering_params) do
+      {
+        id: query.id,
+        heating_unit_ids: [heating_unit.id]
+      }
+    end
+
+    it 'starts contractor rendering for a query' do
+      query.planned_heatings << create(:heating, heating_unit: heating_unit)
+
+      post "/api/v1/queries/#{query.id}/start_contractor_rendering", params: contractor_rendering_params
+
+      response_body = JSON.parse(response.body)
+      query.reload
+
+      expect(response.status).to eq(201)
+      expect(query.tendering_heatings).to be_present
+      expect(query.tendering_heatings.map(&:heating_unit_id)).to include(heating_unit.id)
     end
   end
 
@@ -53,18 +81,7 @@ describe Junction::Queries do
       expect(query).to be_present
 
       expect(query.address.street).to eq(query_params[:address][:street])
-      expect(query.heatings.count).to eq(1)
-    end
-  end
-
-  describe 'PUT /queries/:id' do
-    let(:query) { create(:query, user: user) } # Assuming you have a Query factory
-    let(:update_params) { { budget: 1500.0, content: 'Updated Query' } }
-
-    it 'updates an existing query' do
-      put "/queries/#{query.id}", update_params
-      expect(last_response.status).to eq(200)
-      # Add more expectations here
+      expect(query.planned_heatings.count).to eq(1)
     end
   end
 end

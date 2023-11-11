@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_11_124229) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_11_142952) do
   create_table "addresses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "street"
     t.string "city"
@@ -49,9 +49,13 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_124229) do
     t.datetime "updated_at", null: false
     t.decimal "percentage", precision: 10
     t.bigint "heating_unit_id", null: false
-    t.bigint "query_id", null: false
+    t.bigint "query_id"
     t.index ["heating_unit_id"], name: "index_heatings_on_heating_unit_id"
-    t.index ["query_id"], name: "index_heatings_on_query_id"
+  end
+
+  create_table "planned_heatings", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "query_id", null: false
+    t.bigint "heating_id", null: false
   end
 
   create_table "queries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -91,6 +95,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_124229) do
     t.index ["query_id"], name: "index_quotations_on_query_id"
   end
 
+  create_table "tendering_heatings", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "query_id", null: false
+    t.bigint "heating_id", null: false
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "username"
     t.datetime "created_at", null: false
@@ -99,7 +108,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_124229) do
 
   add_foreign_key "company_contacts", "companies"
   add_foreign_key "heatings", "heating_units"
-  add_foreign_key "heatings", "queries"
   add_foreign_key "queries", "addresses"
   add_foreign_key "queries", "users"
   add_foreign_key "quota_messages", "company_contacts"

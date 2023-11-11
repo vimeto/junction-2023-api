@@ -75,7 +75,7 @@ class Query::SummaryBuilder
     total_cost = 0
     total_energy = 0
 
-    query.heatings.each do |heating|
+    query.planned_heatings.each do |heating|
       # check that the heating type is in the list of current heating solutions
       total_cost += heating.cost
       total_energy += heating.energy
@@ -98,7 +98,7 @@ class Query::SummaryBuilder
     end.to_h
 
     total_co2_reduction = PLANNED_HEATING_SOLUTIONS.map do |solution|
-      current_co2 = query.heatings.sum { |h| CURRENT_HEATING_CO2[h.heating_unit.heating_type] * h.energy }
+      current_co2 = query.planned_heatings.sum { |h| CURRENT_HEATING_CO2[h.heating_unit.heating_type] * h.energy }
       planned_co2 = PLANNED_HEATING_CO2[solution] * total_energy
       co2_reduction = current_co2 - planned_co2
       [solution, co2_reduction]
