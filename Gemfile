@@ -36,6 +36,10 @@ group :development, :test do
   gem "factory_bot_rails"
 end
 
+group :test do
+  gem "webmock"
+end
+
 
 gem "ed25519", "~> 1.3"
 

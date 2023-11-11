@@ -21,7 +21,7 @@ class Query < ApplicationRecord
 
     if include_heating_units
       hash.merge!({
-        heatings: heatings.map { |heating| heating.attributes }
+        heating_units: heatings.map { |heating| heating.heating_unit.attributes }
       })
     end
 

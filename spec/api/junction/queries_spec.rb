@@ -21,10 +21,7 @@ describe Junction::Queries do
 
   describe 'POST /queries/:id/start_contractor_rendering' do
     let(:contractor_rendering_params) do
-      {
-        id: query.id,
-        heating_unit_ids: [heating_unit.id]
-      }
+      { id: query.id, heating_unit_ids: [heating_unit.id] }
     end
 
     it 'starts contractor rendering for a query' do
@@ -44,6 +41,7 @@ describe Junction::Queries do
   describe 'POST /queries' do
     let(:query_params) do
       {
+        skip_gpt: true,
         name: "default name",
         occupants: 4,
         budget: 1000.0,
@@ -64,6 +62,10 @@ describe Junction::Queries do
           zipcode: '75000'
         }
       }
+    end
+
+    let(:gpt_api_response) do
+      { "choices": [{ message: {  "content": "This is a response."} }] }
     end
 
     it 'creates a new query' do

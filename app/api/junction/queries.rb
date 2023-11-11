@@ -55,6 +55,7 @@ module Junction
 
       desc 'Create a query. Returns a summary { total_savings:, total_cost:, total_energy: } in summary'
       params do
+        optional :skip_gpt, type: Boolean, desc: 'Skip GPT'
         requires :occupants, type: Integer, desc: 'Number of occupants'
         requires :budget, type: Float, desc: 'Budget'
         optional :name, type: String, desc: 'Name'
@@ -113,9 +114,15 @@ module Junction
 
         if query.save
           summary_builder = Query::SummaryBuilder.call(query)
-          query.update({
-            summary: summary_builder.result
-          })
+          summary = summary_builder.result
+
+          if (params[:skip_gpt] != true)
+            intelligent_summary_builder = Query::IntelligentSummaryBuilder.call(query, summary)
+            summary.merge!({ intelligent_summary: intelligent_summary_builder.result })
+          end
+
+          query.update({ summary: summary })
+
           { query: query.as_json(include_heating_units: true) }
         else
           error!(query.errors.full_messages.join(", "), 400)
