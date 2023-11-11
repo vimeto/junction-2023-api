@@ -9,7 +9,8 @@ gem "rack-cors"
 gem "sprockets-rails"
 
 # mysql using triloy
-gem "trilogy"
+# gem "trilogy"
+gem "mysql2"
 
 # grape
 gem "grape"
