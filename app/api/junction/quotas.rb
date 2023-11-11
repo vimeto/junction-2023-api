@@ -1,12 +1,12 @@
 # app/api/my_app/my_resource.rb
 module Junction
-  class Quotas < Grape::API
+  class Offers < Grape::API
     before do
       authenticate_user!
     end
 
-    resource :quotas do
-      desc "Get quota with id"
+    resource :offers do
+      desc "Get an offer with id"
       params do
         requires :id, type: Integer, desc: "Quota id."
       end
@@ -28,7 +28,7 @@ module Junction
             },
             url: "http://www.junction.fi"
           },
-          quota: {
+          offer: {
             name: "Heatpump 2023",
             product: "Mitsubishi 2023",
             price: 1234,
@@ -67,14 +67,14 @@ module Junction
         }
       end
 
-      desc "Get all outstanding quotas for a quota"
+      desc "Get all outstanding offers for a query"
       params do
-        requires :id, type: Integer, desc: "Quota id."
+        requires :id, type: Integer, desc: "Offer id."
       end
       get ':id/outstanding' do
         data = {
           id: params[:id],
-          quotas: [
+          offers: [
             {
               id: 1,
               company: {
