@@ -1,2 +1,0 @@
-class HeatingSystem < ApplicationRecord
-end
