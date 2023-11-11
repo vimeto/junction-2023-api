@@ -39,7 +39,7 @@ module Junction
           messages: [
             {
               id: 1,
-              user: "root@root.fi"
+              user: "root@root.fi",
               message: "Hello! My customer would be interested in buying a heat pump for you. What is the price for a 1000kW heat pump?"
             },
             {
