@@ -139,6 +139,9 @@ GEM
       grape (~> 1.3)
     grape-swagger-rails (0.4.0)
       railties (>= 6.0.6.1)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     io-console (0.6.0)
@@ -157,6 +160,7 @@ GEM
     mini_mime (1.1.5)
     minitest (5.20.0)
     msgpack (1.7.2)
+    multi_xml (0.6.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
     mustermann-grape (1.0.2)
@@ -287,6 +291,7 @@ DEPENDENCIES
   grape
   grape-swagger
   grape-swagger-rails
+  httparty (~> 0.21.0)
   mysql2
   puma (>= 5.0)
   rack-cors

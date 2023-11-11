@@ -69,7 +69,7 @@ describe Junction::Queries do
     it 'creates a new query' do
       post "/api/v1/queries", params: query_params
 
-      response_body = JSON.parse(response.body)
+      response_body = JSON.parse(response.body)["query"]
 
       expect(response.status).to eq(201)
       expect(response_body['occupants']).to eq(query_params[:occupants])

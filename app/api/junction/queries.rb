@@ -116,7 +116,7 @@ module Junction
           query.update({
             summary: summary_builder.result
           })
-          query
+          { query: query.as_json(include_heating_units: true) }
         else
           error!(query.errors.full_messages.join(", "), 400)
         end
