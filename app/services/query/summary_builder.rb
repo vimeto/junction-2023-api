@@ -30,6 +30,25 @@ class Query::SummaryBuilder
     [0.15, 0.3, 0.2]
   ]
 
+  CURRENT_HEATING_CO2 = {
+    "direct" => 0.3,
+    "oil" => 0.36,
+    "gas" => 0.2,
+    "district" => 0.15
+  }.freeze
+
+  PLANNED_HEATING_CO2 = {
+    "heatpump" => 0.1,
+    "geothermal" => 0.05,
+    "water_heatpump" => 0.08
+  }.freeze
+
+  INVESTMENT_COSTS = {
+    "heatpump" => 2500,
+    "geothermal" => 27500,
+    "water_heatpump" => 15000
+  }.freeze
+
   attr_reader :result
 
   def self.call(*args)
@@ -78,10 +97,32 @@ class Query::SummaryBuilder
       [PLANNED_HEATING_SOLUTIONS[index], saving]
     end.to_h
 
+    total_co2_reduction = PLANNED_HEATING_SOLUTIONS.map do |solution|
+      current_co2 = query.heatings.sum { |h| CURRENT_HEATING_CO2[h.heating_unit.heating_type] * h.energy }
+      planned_co2 = PLANNED_HEATING_CO2[solution] * total_energy
+      co2_reduction = current_co2 - planned_co2
+      [solution, co2_reduction]
+    end.to_h
+
+    roi = total_savings_by_solution.map do |solution, savings|
+      average_investment_cost = INVESTMENT_COSTS[solution]
+      years_to_roi = average_investment_cost / savings
+      [solution, years_to_roi]
+    end.to_h
+
+    summary_data = PLANNED_HEATING_SOLUTIONS.map do |solution|
+      {
+        "name" => solution,
+        "total_savings" => total_savings_by_solution[solution],
+        "total_co2_reduction" => total_co2_reduction[solution],
+        "roi" => roi[solution]
+      }
+    end
+
     self.result = {
-      total_savings: total_savings_by_solution,
-      total_cost: total_cost,
-      total_energy: total_energy
+      "data" => summary_data,
+      "total_cost" => total_cost,
+      "total_energy" => total_energy
     }
   end
 end

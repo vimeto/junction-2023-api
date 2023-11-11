@@ -23,9 +23,9 @@ describe Junction::Queries do
         due_date: DateTime.now,
         current_heatings: [
           {
-            heating_type: 'gas',
+            heating_type: 'direct',
             energy: 500,
-            cost: 200,
+            cost: 2000,
             state: 'installed',
             percentage: 60
           }
