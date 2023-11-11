@@ -110,12 +110,17 @@ class Query::SummaryBuilder
       [solution, years_to_roi]
     end.to_h
 
+    average_price = total_savings_by_solution.map do |solution, savings|
+      [solution, INVESTMENT_COSTS[solution]]
+    end.to_h
+
     summary_data = PLANNED_HEATING_SOLUTIONS.map do |solution|
       {
         "name" => solution,
         "total_savings" => total_savings_by_solution[solution],
         "total_co2_reduction" => total_co2_reduction[solution],
-        "roi" => roi[solution]
+        "roi" => roi[solution],
+        "average_price" => average_price[solution]
       }
     end
 

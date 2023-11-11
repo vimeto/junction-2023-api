@@ -5,8 +5,10 @@ module Api
     version 'v1', using: :path
     format :json
 
+    mount Junction::Home
     mount Junction::Welcome
     mount Junction::Queries
+    mount Junction::Quotas
 
     add_swagger_documentation
   end

@@ -51,14 +51,12 @@ module Junction
         end
       end
 
-
-
       desc 'Create a query. Returns a summary { total_savings:, total_cost:, total_energy: } in summary'
       params do
         requires :occupants, type: Integer, desc: 'Number of occupants'
         requires :budget, type: Float, desc: 'Budget'
         optional :name, type: String, desc: 'Name'
-        optional :houseSqm, type: Float, desc: 'House square meters' # TODO: add migration
+        optional :houseSqm, type: Float, desc: 'House square meters'
         requires :content, type: String, desc: 'Content'
         group :address, type: Hash do
           optional :street, type: String, desc: 'Street name'
