@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_11_154859) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_11_094246) do
   create_table "addresses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "street"
     t.string "city"
@@ -22,8 +22,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_154859) do
 
   create_table "companies", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
+    t.string "email"
+    t.bigint "address_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["address_id"], name: "index_companies_on_address_id"
   end
 
   create_table "company_contacts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -36,92 +39,54 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_11_154859) do
   end
 
   create_table "heating_units", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.string "heating_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "state"
-    t.string "heating_type"
   end
 
   create_table "heatings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.decimal "energy", precision: 10
     t.decimal "cost", precision: 10
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "state"
     t.decimal "percentage", precision: 10
     t.bigint "heating_unit_id", null: false
     t.bigint "query_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["heating_unit_id"], name: "index_heatings_on_heating_unit_id"
     t.index ["query_id"], name: "index_heatings_on_query_id"
-  end
-
-  create_table "planned_heatings", primary_key: "[:query_id, :heating_id]", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "query_id", null: false
-    t.bigint "heating_id", null: false
-    t.index ["heating_id"], name: "index_planned_heatings_on_heating_id"
-    t.index ["query_id"], name: "index_planned_heatings_on_query_id"
   end
 
   create_table "queries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.text "content"
+    t.string "name"
     t.decimal "budget", precision: 10
     t.bigint "address_id", null: false
     t.integer "occupants"
     t.datetime "due_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "name"
     t.text "summary"
     t.decimal "houseSqm", precision: 10
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["address_id"], name: "index_queries_on_address_id"
     t.index ["user_id"], name: "index_queries_on_user_id"
   end
 
-  create_table "quota_discussions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "quota_messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.text "content"
-    t.bigint "user_id", null: false
-    t.bigint "company_contact_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["company_contact_id"], name: "index_quota_messages_on_company_contact_id"
-    t.index ["user_id"], name: "index_quota_messages_on_user_id"
-  end
-
-  create_table "quotations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "query_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["query_id"], name: "index_quotations_on_query_id"
-  end
-
-  create_table "tendering_heatings", primary_key: "[:query_id, :heating_id]", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "query_id", null: false
-    t.bigint "heating_id", null: false
-    t.index ["heating_id"], name: "index_tendering_heatings_on_heating_id"
-    t.index ["query_id"], name: "index_tendering_heatings_on_query_id"
-  end
-
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "username"
+    t.string "email"
+    t.string "first_name"
+    t.string "last_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "companies", "addresses"
   add_foreign_key "company_contacts", "companies"
   add_foreign_key "heatings", "heating_units"
   add_foreign_key "heatings", "queries"
-  add_foreign_key "planned_heatings", "heatings"
-  add_foreign_key "planned_heatings", "queries"
   add_foreign_key "queries", "addresses"
   add_foreign_key "queries", "users"
-  add_foreign_key "quota_messages", "company_contacts"
-  add_foreign_key "quota_messages", "users"
-  add_foreign_key "quotations", "queries"
-  add_foreign_key "tendering_heatings", "heatings"
-  add_foreign_key "tendering_heatings", "queries"
 end
