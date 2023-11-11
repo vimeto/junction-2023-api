@@ -1,0 +1,2 @@
+class QuotaDiscussion < ApplicationRecord
+end

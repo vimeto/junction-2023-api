@@ -1,0 +1,2 @@
+class Heating < ApplicationRecord
+end
