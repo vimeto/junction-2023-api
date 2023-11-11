@@ -75,6 +75,11 @@ class Query::SummaryBuilder
     total_cost = 0
     total_energy = 0
 
+    solution_instances = PLANNED_HEATING_SOLUTIONS.map do |solution|
+      HeatingUnit.first_or_create(heating_type: solution)
+    end
+
+
     query.heatings.each do |heating|
       next if heating.state != "current"
       # check that the heating type is in the list of current heating solutions
@@ -117,9 +122,10 @@ class Query::SummaryBuilder
       [solution, INVESTMENT_COSTS[solution]]
     end.to_h
 
-    summary_data = PLANNED_HEATING_SOLUTIONS.map do |solution|
+    summary_data = PLANNED_HEATING_SOLUTIONS.map.with_index do |solution, index|
       {
         "name" => solution,
+        "id" => solution_instances[index].id,
         "total_savings" => total_savings_by_solution[solution],
         "total_co2_reduction" => total_co2_reduction[solution],
         "roi" => roi[solution],
