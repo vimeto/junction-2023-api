@@ -76,7 +76,8 @@ class Query::SummaryBuilder
     total_energy = 0
 
     solution_instances = PLANNED_HEATING_SOLUTIONS.map do |solution|
-      HeatingUnit.first_or_create(heating_type: solution)
+      HeatingUnit.find_by(heating_type: solution) || HeatingUnit.
+        create(heating_type: solution, name: solution.gsub("_", " ").capitalize)
     end
 
 

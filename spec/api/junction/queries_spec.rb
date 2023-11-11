@@ -19,7 +19,7 @@ describe Junction::Queries do
     end
   end
 
-  describe 'POST /queries/:id/start_contractor_rendering' do
+  describe 'POST /queries/:id/update_selected_heating_units' do
     let(:contractor_rendering_params) do
       { id: query.id, heating_unit_ids: [heating_unit.id] }
     end
@@ -27,7 +27,7 @@ describe Junction::Queries do
     it 'starts contractor rendering for a query' do
       query.heatings << create(:heating, heating_unit: heating_unit, state: 'current', query: query)
 
-      post "/api/v1/queries/#{query.id}/start_contractor_rendering", params: contractor_rendering_params
+      post "/api/v1/queries/#{query.id}/update_selected_heating_units", params: contractor_rendering_params
 
       response_body = JSON.parse(response.body)
       query.reload

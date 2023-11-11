@@ -23,13 +23,13 @@ module Junction
         end
       end
 
-      desc "Start contractor rendering"
+      desc "Update a query's selected heating units"
       params do
         requires :id, type: Integer, desc: 'Query id'
         requires :heating_unit_ids, type: Array, desc: 'Heating unit ids'
       end
 
-      post ':id/start_contractor_rendering' do
+      post ':id/update_selected_heating_units' do
         query = current_user.queries.where(id: params[:id]).includes(heatings: :heating_unit).first
         error!('Not Found', 404) if !query
 
