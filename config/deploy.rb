@@ -3,12 +3,12 @@ lock "~> 3.18.0"
 set :application, "junction"
 
 # set :repo_url, "git@github.com:vimeto/junction-2023-api.git"
+set :repo_url, "git@github.com:vimeto/junction-2023-api.git"
 
-set :scm, :git
-set :repository, "git@github.com:vimeto/junction-2023-api.git"
-set :branch, "stable"
-set :repository_cache, "git_cache"
-set :deploy_via, :remote_cache
+# set :scm, :git
+# set :branch, "main"
+# set :repository_cache, "git_cache"
+# set :deploy_via, :remote_cache
 set :ssh_options, { :forward_agent => true }
 
 # Deploy to the user's home directory
