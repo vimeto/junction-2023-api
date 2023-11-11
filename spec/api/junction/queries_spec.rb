@@ -11,7 +11,7 @@ describe Junction::Queries do
 
   describe 'GET /queries' do
     it 'returns all queries' do
-      get "/api/v1/queries", params: { format: :json }
+      get "/api/v1/queries"
       response_body = JSON.parse(response.body)
 
       expect(response.status).to eq(200)
@@ -28,7 +28,7 @@ describe Junction::Queries do
     end
 
     it 'starts contractor rendering for a query' do
-      query.planned_heatings << create(:heating, heating_unit: heating_unit)
+      query.heatings << create(:heating, heating_unit: heating_unit, state: 'current', query: query)
 
       post "/api/v1/queries/#{query.id}/start_contractor_rendering", params: contractor_rendering_params
 
@@ -36,8 +36,8 @@ describe Junction::Queries do
       query.reload
 
       expect(response.status).to eq(201)
-      expect(query.tendering_heatings).to be_present
-      expect(query.tendering_heatings.map(&:heating_unit_id)).to include(heating_unit.id)
+      expect(query.heatings.tendered).to be_present
+      expect(query.heatings.tendered.map(&:heating_unit_id)).to include(heating_unit.id)
     end
   end
 
@@ -81,7 +81,7 @@ describe Junction::Queries do
       expect(query).to be_present
 
       expect(query.address.street).to eq(query_params[:address][:street])
-      expect(query.planned_heatings.count).to eq(1)
+      expect(query.heatings.current.count).to eq(1)
     end
   end
 end

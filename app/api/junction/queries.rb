@@ -30,10 +30,10 @@ module Junction
       end
 
       post ':id/start_contractor_rendering' do
-        query = current_user.queries.where(id: params[:id]).includes(planned_heatings: :heating_unit).first
+        query = current_user.queries.where(id: params[:id]).includes(heatings: :heating_unit).first
         error!('Not Found', 404) if !query
 
-        heating_unit_ids = query.planned_heatings.map(&:heating_unit_id) & params[:heating_unit_ids].map(&:to_i)
+        heating_unit_ids = query.heatings.current.map(&:heating_unit_id) & params[:heating_unit_ids].map(&:to_i)
         heatings = Heating.where(heating_unit_id: heating_unit_ids)
 
         if heatings.empty?
@@ -41,8 +41,10 @@ module Junction
         end
 
         if query.save
-          # TODO: update this so that we remove the heatings from planned_heatings
-          query.tendering_heatings << heatings
+          heatings.each do |heating|
+            heating.update(state: "tendered")
+          end
+
           query.save!
 
           query
@@ -94,21 +96,19 @@ module Junction
         })
 
         params["current_heatings"]&.each do |heating|
-          state = heating[:state].presence || "planned"
           heating_unit = HeatingUnit.where({
-            state: state,
             heating_type: heating[:heating_type]
           }).first || HeatingUnit.create({
-            state: state,
             heating_type: heating[:heating_type]
           })
 
-          heating = heating_unit.heatings.new({
+          heating = heating_unit.heatings.create({
             energy: heating[:energy],
             cost: heating[:cost],
-            percentage: heating[:percentage]
+            percentage: heating[:percentage],
+            state: "current"
           })
-          query.planned_heatings << heating
+          query.heatings << heating
         end
 
         if query.save

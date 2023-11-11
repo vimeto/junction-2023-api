@@ -1,6 +1,8 @@
 class Heating < ApplicationRecord
   belongs_to :heating_unit
 
-  has_many :planned_queries, class_name: 'Query', join_table: :planned_heatings
-  has_many :tendering_queries, class_name: 'Query', join_table: :tendering_heatings
+  belongs_to :query
+
+  scope :current, -> { where(state: "current") }
+  scope :tendered, -> { where(state: 'tendered') }
 end
