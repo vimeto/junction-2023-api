@@ -13,6 +13,7 @@ module Junction
       get ':id' do
         data = {
           id: params[:id],
+          name: "Heatpump 2023",
           company: {
             contact_person: {
               name: "John Doe",
