@@ -1,2 +1,0 @@
-class QuotaDiscussion < ApplicationRecord
-end

@@ -8,7 +8,7 @@ module Api
     mount Junction::Home
     mount Junction::Welcome
     mount Junction::Queries
-    mount Junction::Quotas
+    mount Junction::Offers
 
     add_swagger_documentation
   end

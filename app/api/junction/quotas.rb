@@ -8,7 +8,7 @@ module Junction
     resource :offers do
       desc "Get an offer with id"
       params do
-        requires :id, type: Integer, desc: "Quota id."
+        requires :id, type: Integer, desc: "Offer id."
       end
       get ':id' do
         data = {
