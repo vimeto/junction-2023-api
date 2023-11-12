@@ -8,9 +8,9 @@ module Junction
     resource :home do
       desc "Return offers for the current user"
       get do
-        offer_ids = [1, 2, 3, 4]
-        company_names = ["Heat pump", "Geothermal", "Water heat pump", "District heating"]
-        answers = [[3, 4], [1, 2], [1, 2], [9, 14]]
+        offer_ids = [1]
+        company_names = ["Geothermal pump"]
+        answers = [[5, 6]]
 
         offers = offer_ids.map.with_index do |offer_id, index|
           {
